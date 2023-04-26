@@ -1,0 +1,35 @@
+{% extends "sparevolumecalculator/layout.html" %}
+
+{% block main %}
+<script type="text/javascript">
+    function createInputs() {
+      var numInputs = document.getElementById("numInputs").value;
+      var inputsDiv = document.getElementById("inputsDiv");
+      inputsDiv.innerHTML = "";
+
+      for (var i = 0; i < numInputs; i++) {
+        var input = document.createElement("input");
+        input.type = "text";
+        input.name = "cable" + i;
+        input.placeholder = "cable " + (i+1);
+        inputsDiv.appendChild(input);
+        inputsDiv.appendChild(document.createElement("br"));
+      }
+    }
+  </script>
+  <form action="{% url 'sparevolumecalculator:results' %}", method="post">
+    {% csrf_token %}
+    <input autocomplete="off" autofocus name="width" placeholder="Gutter width" max="500" type="number">
+    <input autocomplete="off" autofocus name="height" placeholder="Gutter height" max="500" type="number">
+    <label for="numInputs">Number of cables/bundles:</label>
+    <input type="number" id="numInputs" name="numCables" min="1" value="1" onchange="createInputs()">
+    <br><br>
+    <div id="inputsDiv">
+      <input type="text" name="cable0" placeholder="cable 1">
+      <br>
+    </div>
+    <br>
+    <input type="submit" value="Submit">
+  </form>
+
+{% endblock %}

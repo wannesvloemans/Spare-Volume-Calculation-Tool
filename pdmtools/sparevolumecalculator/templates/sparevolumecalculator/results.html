@@ -1,0 +1,11 @@
+{% extends "sparevolumecalculator/layout.html" %}
+
+{% block title %}
+    RESULT PAGE
+{% endblock %}
+
+{% block main %}
+    <h1>Results</h1>
+    <h3>The spare volume equals: {{  spare_volume  }}%</h3>
+    <img src="{{ image_file }}" alt="My Figure">
+{% endblock %}
