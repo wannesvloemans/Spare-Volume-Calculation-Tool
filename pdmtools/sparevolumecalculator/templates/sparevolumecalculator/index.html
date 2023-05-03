@@ -2,27 +2,27 @@
 
 {% block main %}
 <script type="text/javascript">
-    function createInputs() {
-      var numInputs = document.getElementById("numInputs").value;
-      var inputsDiv = document.getElementById("inputsDiv");
-      inputsDiv.innerHTML = "";
+function createInputs() {
+  var numInputs = document.getElementById("numInputs").value;
+  var inputsDiv = document.getElementById("inputsDiv");
+  inputsDiv.innerHTML = "";
 
-      for (var i = 0; i < numInputs; i++) {
-        var input = document.createElement("input");
-        input.type = "text";
-        input.name = "cable" + i;
-        input.placeholder = "cable " + (i+1);
-        inputsDiv.appendChild(input);
-        inputsDiv.appendChild(document.createElement("br"));
+  for (var i = 0; i < numInputs; i++) {
+    var input1 = document.createElement("input");
+    input1.type = "text";
+    input1.name = "cable" + i;
+    input1.placeholder = "cable " + (i+1);
+    inputsDiv.appendChild(input1);
 
-        input.type = "text";
-        input.name = "cable" + i;
-        input.placeholder = "cable " + (i+1);
-        inputsDiv.appendChild(input);
-        inputsDiv.appendChild(document.createElement("br"));
+    var input2 = document.createElement("input");
+    input2.type = "number";
+    input2.name = "number" + i;
+    input2.placeholder = "number " + (i+1);
+    inputsDiv.appendChild(input2);
 
-      }
-    }
+    inputsDiv.appendChild(document.createElement("br"));
+  }
+}
   </script>
   <form action="{% url 'sparevolumecalculator:results' %}", method="post">
     {% csrf_token %}
@@ -32,7 +32,7 @@
     <input type="number" id="numInputs" name="numCables" min="1" value="1" onchange="createInputs()">
     <br><br>
     <div id="inputsDiv">
-      <input type="text" name="cable0" placeholder="cable 1">
+
       <br>
     </div>
     <br>

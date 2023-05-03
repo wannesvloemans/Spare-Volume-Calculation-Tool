@@ -4,6 +4,12 @@ from django.core.files.storage import FileSystemStorage
 from . import helpers
 from . import helpers2
 
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import Paragraph, Image
+from reportlab.lib.styles import getSampleStyleSheet
 
 # Create your views here.
 def index(request):
@@ -23,7 +29,7 @@ def results(request):
 
         for i in range(numCables):
             cable = int(request.POST.get("cable"+str(i)))
-            cables.append(cable)
+            cables.extend([cable]*int(request.POST.get("number"+str(i))))
 
         cables = [d/2 for d in cables]
         cables = sorted(cables, reverse=True)
@@ -40,7 +46,27 @@ def results(request):
         '''
 
         helpers2.main_algorithm(cables, height, width)
-        
+        # Create a new PDF document
+        pdf = canvas.Canvas('sparevolumecalculator/static/results.pdf', pagesize=letter)
+        pdf.setFont("Helvetica-Bold", 40)
+        # Draw the title on the PDF document
+        pdf.drawString(250, 750, "Results")
+        # Define the text and image to include in the PDF
+        image = 'sparevolumecalculator/static/images/result.png'
+
+        # Set the position and size of the image
+        x = 1*inch
+        y = 1*inch
+        width = 6*inch
+        height = 4*inch
+
+        # Draw the text on the PDF document
+
+        # Draw the image on the PDF document
+        pdf.drawImage(image, x, y, width=width, height=height)
+
+        # Save the PDF document
+        pdf.save()
         return render(request, "sparevolumecalculator/results.html", {'image_file':'/static/images/result.png'})#, 'spare_volume':spare_volume})
 
 def documentation(request):
