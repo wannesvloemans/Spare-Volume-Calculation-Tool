@@ -4,12 +4,10 @@ from django.core.files.storage import FileSystemStorage
 from . import helpers
 from . import helpers2
 
+from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
-from reportlab.lib.pagesizes import letter
-from reportlab.lib import colors
-from reportlab.platypus import Paragraph, Image
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.utils import ImageReader
 
 # Create your views here.
 def index(request):
@@ -44,30 +42,39 @@ def results(request):
         spare_volume = helpers.calculate_spare_volume2(height, width, placed_cables)
         ----------------------------------------------------------------------------------
         '''
-
         helpers2.main_algorithm(cables, height, width)
         # Create a new PDF document
         pdf = canvas.Canvas('sparevolumecalculator/static/results.pdf', pagesize=letter)
+
+        # Set font and size
         pdf.setFont("Helvetica-Bold", 40)
+
         # Draw the title on the PDF document
         pdf.drawString(250, 750, "Results")
+
         # Define the text and image to include in the PDF
-        image = 'sparevolumecalculator/static/images/result.png'
+        image_path = 'sparevolumecalculator/static/images/result.png'
 
         # Set the position and size of the image
-        x = 1*inch
-        y = 1*inch
-        width = 6*inch
-        height = 4*inch
+        img = ImageReader(image_path)
+        img_width, img_height = img.getSize()
+        aspect_ratio = img_height / float(img_width)
+        width = 8 * inch
+        height = width * aspect_ratio
+
+        # Calculate the position of the image
+        y = 650 - height
+        x = 0.5 * (letter[0] - width)
 
         # Draw the text on the PDF document
 
         # Draw the image on the PDF document
-        pdf.drawImage(image, x, y, width=width, height=height)
+        pdf.drawImage(img, x, y, width=width, height=height)
 
         # Save the PDF document
         pdf.save()
-        return render(request, "sparevolumecalculator/results.html", {'image_file':'/static/images/result.png'})#, 'spare_volume':spare_volume})
+
+        return render(request, "sparevolumecalculator/results.html", {'image_file':'/static/images/result.png'})# , 'spare_volume':spare_volume})
 
 def documentation(request):
     return render(request, "sparevolumecalculator/documentation.html", {
